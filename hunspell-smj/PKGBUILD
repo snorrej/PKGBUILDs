@@ -1,0 +1,34 @@
+# Contributor: Kevin Brubeck Unhammer <unhammer@gmail.com>
+# Maintainer: Kevin Brubeck Unhammer <unhammer@gmail.com>
+
+pkgname=hunspell-smj
+pkgver=1.0beta10.20130207
+pkgrel=1
+pkgdesc="Lule Sámi / Julevsámegiella (smj) dictionary for Hunspell"
+arch=('i686' 'x86_64')
+url="http://www.divvun.no/en/userdocs/X-spell/install_linux.html"
+license=('GPL')
+depends=('hunspell')
+# Can't find a static link to the file of this pkgver, so this PKGBUILD might eventually need changes
+source=(http://divvun.no/static_files/hunspell-smi.tar.gz)
+md5sums=('b026ac02bda8f97cd99fc2478e1d10bd')
+
+package() {
+  cd $srcdir/hunspell-smi-$pkgver/
+  make -f Makefile.smi || return 1
+  make DESTDIR=$pkgdir -f Makefile.smi install || return 1
+
+  # Ensure that LibreOffice finds them:
+  mkdir -p $pkgdir/usr/share/hunspell
+  ln -s $pkgdir/usr/share/myspell/dicts/smj{,_NO,_SE}.{dic,aff} $pkgdir/usr/share/hunspell/
+
+  # Remove the dictionaries we don't need (separate packages for them):
+  rm -f $pkgdir/usr/share/myspell/dicts/se{,_NO,_SE,_FI}.{dic,aff}
+  rm -f $pkgdir/usr/share/myspell/dicts/sma{,_NO,_SE}.{dic,aff}
+  rm -f $pkgdir/usr/share/myspell/dicts/hyph_se.dic
+
+  # I believe dictionary.lst should be a user-configurable file, in
+  # any case it would get overwritten if new packages wanted to do the
+  # same thing, and the dictionaries seems to work without this:
+  rm -f $pkgdir/usr/share/myspell/dicts/dictionary.lst
+}
