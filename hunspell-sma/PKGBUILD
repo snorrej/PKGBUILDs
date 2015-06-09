@@ -20,7 +20,8 @@ package() {
 
   # Ensure that LibreOffice finds them:
   mkdir -p $pkgdir/usr/share/hunspell
-  ln -s $pkgdir/usr/share/myspell/dicts/sma{,_NO,_SE}.{dic,aff} $pkgdir/usr/share/hunspell/
+  cd $pkgdir/usr/share/hunspell
+  ln -s sma{,_NO,_SE}.{dic,aff} .
 
   # Remove the dictionaries we don't need (separate packages for them):
   rm -f $pkgdir/usr/share/myspell/dicts/se{,_NO,_SE,_FI}.{dic,aff}
